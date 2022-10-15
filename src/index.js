@@ -1,14 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import reportWebVitals from './reportWebVitals';
+
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
+import ErrorPage from './views/ErrorPage';
+import SignUp from './views/SignUp';
+import SignIn from './views/SignIn';
+import Home from './views/Home';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '',
+        element: <Home />,
+      },
+      {
+        path: 'sign-up',
+        element: <SignUp />,
+      },
+      {
+        path: 'sign-in',
+        element: <SignIn />,
+      },
+    ],
   },
 ]);
 

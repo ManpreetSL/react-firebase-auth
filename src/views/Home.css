@@ -1,0 +1,11 @@
+div.home {
+  width: 50%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  padding: 24px;
+}
+
+a {
+  font-size: 2em;
+}
