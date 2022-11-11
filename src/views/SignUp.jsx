@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../contexts/AuthContext';
+import { Alert, AlertTitle } from '@mui/material';
 
 function Copyright(props) {
   return (
@@ -37,6 +38,7 @@ const theme = createTheme();
 function SignUp() {
   const { signUp } = useAuth();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -57,10 +59,13 @@ function SignUp() {
 
     try {
       setError('');
+      setLoading(true);
       await signUp(email, password);
     } catch (error) {
       console.error('Error signing up', error);
       return setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,11 +156,20 @@ function SignUp() {
                 />
               </Grid>
             </Grid>
+            {error ? (
+              <Grid item xs={12}>
+                <Alert severity='error'>
+                  <AlertTitle>Error</AlertTitle>
+                  {error}
+                </Alert>
+              </Grid>
+            ) : null}
             <Button
               type='submit'
               fullWidth
               variant='contained'
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
               Sign Up
             </Button>
