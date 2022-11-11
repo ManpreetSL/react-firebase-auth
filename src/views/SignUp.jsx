@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useAuth } from '../contexts/AuthContext';
 
 function Copyright(props) {
   return (
@@ -34,13 +35,33 @@ function Copyright(props) {
 const theme = createTheme();
 
 function SignUp() {
-  const handleSubmit = (event) => {
+  const { signUp } = useAuth();
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+      'password-confirmation': data.get('password-confirmation'),
     });
+
+    const email = data.get('email');
+    const password = data.get('password');
+    const passwordConfirmation = data.get('password-confirmation');
+
+    if (password !== passwordConfirmation) {
+      return setError('Passwords do not match');
+    }
+
+    try {
+      setError('');
+      await signUp(email, password);
+    } catch (error) {
+      console.error('Error signing up', error);
+      return setError(error);
+    }
   };
 
   return (
@@ -107,6 +128,17 @@ function SignUp() {
                   label='Password'
                   type='password'
                   id='password'
+                  autoComplete='new-password'
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name='password-confirmation'
+                  label='Confirm password'
+                  type='password'
+                  id='password-confirmation'
                   autoComplete='new-password'
                 />
               </Grid>

@@ -14,7 +14,7 @@ export function useAuth() {
 function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
 
-  function signUp(email, password) {
+  async function signUp(email, password) {
     createUserWithEmailAndPassword(auth, email, password).catch((error) => {
       console.error('Failed to sign up new user', error.code, error.message);
     });
