@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useAuth } from '../contexts/AuthContext';
+import { Alert, AlertTitle } from '@mui/material';
 
 function Copyright(props) {
   return (
@@ -34,13 +36,26 @@ function Copyright(props) {
 const theme = createTheme();
 
 function SignIn() {
-  const handleSubmit = (event) => {
+  const { signIn } = useAuth();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email');
+    const password = data.get('password');
+
+    try {
+      setError('');
+      setLoading(true);
+      await signIn(email, password);
+    } catch (error) {
+      console.error('Error signing up', error);
+      return setError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,11 +106,20 @@ function SignIn() {
               control={<Checkbox value='remember' color='primary' />}
               label='Remember me'
             />
+            {error ? (
+              <Grid item xs={12}>
+                <Alert severity='error'>
+                  <AlertTitle>Error</AlertTitle>
+                  {error}
+                </Alert>
+              </Grid>
+            ) : null}
             <Button
               type='submit'
               fullWidth
               variant='contained'
               sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
             >
               Sign In
             </Button>

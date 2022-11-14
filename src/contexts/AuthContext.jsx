@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
 } from 'firebase/auth';
 import React, { useState, useEffect, useContext } from 'react';
 import { auth } from '../firebase';
@@ -21,6 +22,12 @@ function AuthProvider({ children }) {
     });
   }
 
+  async function signIn(email, password) {
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      console.error('Failed to sign in user', error.code, error.message);
+    });
+  }
+
   /**
    * When Firebase indicates that the authorisation state has changed, updated the currently logged in user
    */
@@ -36,6 +43,7 @@ function AuthProvider({ children }) {
   const value = {
     currentUser,
     signUp,
+    signIn,
   };
   return (
     <AuthContext.Provider value={value}>
