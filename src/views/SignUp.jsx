@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useAuth } from '../contexts/AuthContext';
 import { Alert, AlertTitle } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -36,9 +37,10 @@ function Copyright(props) {
 const theme = createTheme();
 
 function SignUp() {
-  const { signUp } = useAuth();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -61,6 +63,7 @@ function SignUp() {
       setError('');
       setLoading(true);
       await signUp(email, password);
+      navigate('/');
     } catch (error) {
       console.error('Error signing up', error);
       return setError(error);
@@ -175,7 +178,7 @@ function SignUp() {
             </Button>
             <Grid container justifyContent='flex-end'>
               <Grid item>
-                <Link href='#' variant='body2'>
+                <Link href='/sign-in' variant='body2'>
                   Already have an account? Sign in
                 </Link>
               </Grid>
